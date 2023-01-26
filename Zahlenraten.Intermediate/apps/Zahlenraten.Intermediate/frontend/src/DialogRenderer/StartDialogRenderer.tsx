@@ -5,7 +5,7 @@ import { IIdentity } from '@atlas-engine/atlas_engine_client';
 import { StartDialogDisplayedCallback, StartDialogService } from '@atlas-engine-contrib/atlas-ui_sdk';
 
 import { Config } from '../config';
-import { ExampleStartDialog } from '../ExampleStartDialog';
+import {ZahlenratenStartDialog} from "../ZahlenratenStartDialog/ZahlenratenStartdialog";
 
 
 export type DialogComponentDict = {
@@ -64,7 +64,7 @@ class StartDialogRenderer extends React.Component<StartDialogRendererProps & Wit
   }
 
   private components: StartDialogComponentDict = {
-    ExampleStartDialog: ExampleStartDialog,
+    ZahlenratenStartDialog: ZahlenratenStartDialog,
   };
 
   public componentDidMount(): void {

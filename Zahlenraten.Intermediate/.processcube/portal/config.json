@@ -13,11 +13,11 @@
     "include": ["example"]
   },
   "startDialogs": {
-    "ExampleStartDialog": {
-      "title": "Example Start Dialog",
+    "ZahlenratenStartDialog": {
+      "title": "ZahlenratenStartDialog",
       "url": "http://localhost:5111",
-      "startButtonTitle": "Öffnen",
-      "id": "ExampleStartDialog"
+      "startButtonTitle": "Spielen",
+      "id": "ZahlenratenStartDialog"
     }
   },
   "translationFolder": "/etc/portal/config/translation",
