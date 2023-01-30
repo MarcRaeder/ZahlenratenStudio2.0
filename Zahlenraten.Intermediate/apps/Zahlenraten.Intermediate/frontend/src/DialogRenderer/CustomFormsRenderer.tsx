@@ -4,7 +4,7 @@ import { DataModels, Identity } from '@atlas-engine/atlas_engine_client';
 import { CustomFormService, FormState } from '@atlas-engine-contrib/atlas-ui_sdk';
 
 import { Config } from '../config';
-import { ExampleCustomForm } from '../ExampleCustomForm';
+import {ZahlenratenCustomForm} from "../ZahlenratenCustomForm/ZahlenratenCustomForm";
 
 
 export type CustomFormProps = {
@@ -40,7 +40,7 @@ export class CustomFormsRenderer extends React.Component<CustomFormRendererProps
   };
 
   private components: CustomFormsComponentDict = {
-    ExampleCustomForm: ExampleCustomForm,
+    ZahlenratenCustomForm: ZahlenratenCustomForm,
   };
 
   private customFormService: CustomFormService | null = null;

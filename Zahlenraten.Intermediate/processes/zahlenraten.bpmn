@@ -61,6 +61,7 @@
         </camunda:formData>
         <camunda:properties>
           <camunda:property name="engine.runPreScript" value="" />
+          <camunda:property name="customForm" value="ZahlenratenCustomForm" />
         </camunda:properties>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1twxtii</bpmn:incoming>
@@ -68,7 +69,7 @@
       <bpmn:dataOutputAssociation id="DataOutputAssociation_0sg8gxd">
         <bpmn:extensionElements>
           <camunda:properties>
-            <camunda:property name="dataSource" value="" />
+            <camunda:property name="dataSource" value="return {&#10;    guess: parseInt(token.current.input)&#10;}" />
           </camunda:properties>
         </bpmn:extensionElements>
         <bpmn:targetRef>Guess</bpmn:targetRef>
@@ -134,19 +135,16 @@
         <bpmn:sourceRef>Guess</bpmn:sourceRef>
         <bpmn:targetRef>Property_1a3i5ym</bpmn:targetRef>
       </bpmn:dataInputAssociation>
-      <bpmn:script>let vergleich = dataObjects.RandomNumber.randomNumber === token.current.guess
+      <bpmn:script>let vergleich = dataObjects.RandomNumber.randomNumber === dataObjects.Guess.guess
 
-let zuHoch = token.current.guess &gt; dataObjects.RandomNumber.randomNumber
+let zuHoch = dataObjects.Guess.guess &gt; dataObjects.RandomNumber.randomNumber
 
 return {istGleich: vergleich,
 istZuHoch: zuHoch}</bpmn:script>
     </bpmn:scriptTask>
-    <bpmn:serviceTask id="Activity_0faoi1m" name="Get Random Number">
+    <bpmn:serviceTask id="Activity_0faoi1m" name="Get Random Number" camunda:type="external" camunda:topic="GetRandomNumberETW">
       <bpmn:extensionElements>
         <camunda:properties>
-          <camunda:property name="module" value="HttpClient" />
-          <camunda:property name="method" value="get" />
-          <camunda:property name="params" value="[&#34;http://www.randomnumberapi.com/api/v1.0/random?min=1&#38;max=20&#38;count=1&#34;, {&#34;headers&#34;:{&#34;Content-Type&#34;:&#34;text/html; charset=UTF-8&#34;}}]" />
           <camunda:property name="studio.paramUrl" value="http://www.randomnumberapi.com/api/v1.0/random?min=1&#38;max=20&#38;count=1" />
           <camunda:property name="studio.paramBody" />
           <camunda:property name="studio.paramContentType" value="text/html; charset=UTF-8" />
@@ -158,7 +156,7 @@ istZuHoch: zuHoch}</bpmn:script>
       <bpmn:dataOutputAssociation id="DataOutputAssociation_0s6h1xf">
         <bpmn:extensionElements>
           <camunda:properties>
-            <camunda:property name="dataSource" value="return {&#10;    randomNumber: token.current.result[0]&#10;}" />
+            <camunda:property name="dataSource" value="return {&#10;    randomNumber: parseInt(token.current.getRandomNumber)&#10;}" />
           </camunda:properties>
         </bpmn:extensionElements>
         <bpmn:targetRef>RandomNumber</bpmn:targetRef>
