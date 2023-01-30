@@ -109,14 +109,19 @@
       <bpmn:incoming>Flow_0s8noj0</bpmn:incoming>
       <bpmn:outgoing>Flow_0xqnkzq</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="Activity_02zrv06" name="Gratulation mein Freund! Möchtest du noch eine Runde spielen?">
+    <bpmn:userTask id="Activity_02zrv06" name="Gewonnen">
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="Restart" type="confirm" defaultValue="Du hast die richtige Zahl erraten!!!" customForm="{&#34;confirmButtonText&#34;:&#34;Ja&#34;,&#34;declineButtonText&#34;:&#34;Nein&#34;}" />
+          <camunda:formField id="Restart" label="Glückwunsch ${dataObjects.UserName.userName}. Möchtest du nochmal spielen?" type="confirm" defaultValue="Du hast die richtige Zahl erraten!!!" customForm="{&#34;confirmButtonText&#34;:&#34;Ja&#34;,&#34;declineButtonText&#34;:&#34;Nein&#34;}" />
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>Gleich</bpmn:incoming>
       <bpmn:outgoing>Flow_1v2mb61</bpmn:outgoing>
+      <bpmn:property id="Property_1tfamia" name="__targetRef_placeholder" />
+      <bpmn:dataInputAssociation id="DataInputAssociation_1443sdu">
+        <bpmn:sourceRef>UserName</bpmn:sourceRef>
+        <bpmn:targetRef>Property_1tfamia</bpmn:targetRef>
+      </bpmn:dataInputAssociation>
     </bpmn:userTask>
     <bpmn:endEvent id="Event_1h04uck">
       <bpmn:incoming>Flow_1tfps9l</bpmn:incoming>
@@ -152,6 +157,7 @@ istZuHoch: zuHoch}</bpmn:script>
           <camunda:property name="studio.paramBody" />
           <camunda:property name="studio.paramContentType" value="text/html; charset=UTF-8" />
           <camunda:property name="studio.paramAuthorization" />
+          <camunda:property name="payload" value="{...token.current}" />
         </camunda:properties>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1qeuwq6</bpmn:incoming>
@@ -164,6 +170,14 @@ istZuHoch: zuHoch}</bpmn:script>
         </bpmn:extensionElements>
         <bpmn:targetRef>RandomNumber</bpmn:targetRef>
       </bpmn:dataOutputAssociation>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_01m4z54">
+        <bpmn:extensionElements>
+          <camunda:properties>
+            <camunda:property name="dataSource" value="return {&#10;    userName: token.current.userName&#10;}" />
+          </camunda:properties>
+        </bpmn:extensionElements>
+        <bpmn:targetRef>UserName</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1qeuwq6" sourceRef="Gateway_009yzld" targetRef="Activity_0faoi1m">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" />
@@ -173,6 +187,8 @@ istZuHoch: zuHoch}</bpmn:script>
       <bpmn:incoming>Flow_0z1trm1</bpmn:incoming>
       <bpmn:outgoing>Flow_1qeuwq6</bpmn:outgoing>
     </bpmn:exclusiveGateway>
+    <bpmn:dataObjectReference id="UserName" dataObjectRef="DataObject_126zdbv" />
+    <bpmn:dataObject id="DataObject_126zdbv" />
     <bpmn:dataObjectReference id="RandomNumber" dataObjectRef="DataObject_0ek5jwf" />
     <bpmn:dataObject id="DataObject_0ek5jwf" />
   </bpmn:process>
@@ -233,8 +249,11 @@ istZuHoch: zuHoch}</bpmn:script>
       <bpmndi:BPMNShape id="Gateway_009yzld_di" bpmnElement="Gateway_009yzld" isMarkerVisible="true">
         <dc:Bounds x="155" y="145" width="50" height="50" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_0dvti8j_di" bpmnElement="UserName">
+        <dc:Bounds x="202" y="-45" width="36" height="50" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="DataObjectReference_1m96l39_di" bpmnElement="RandomNumber">
-        <dc:Bounds x="259" y="-25" width="36" height="50" />
+        <dc:Bounds x="262" y="-5" width="36" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0p5rfjm_di" bpmnElement="Flow_0p5rfjm">
         <di:waypoint x="128" y="170" />
@@ -305,9 +324,14 @@ istZuHoch: zuHoch}</bpmn:script>
         <di:waypoint x="509" y="130" />
         <di:waypoint x="510" y="85" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataInputAssociation_1443sdu_di" bpmnElement="DataInputAssociation_1443sdu">
+        <di:waypoint x="238" y="-20" />
+        <di:waypoint x="960" y="-20" />
+        <di:waypoint x="960" y="130" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="DataInputAssociation_0y7qwmd_di" bpmnElement="DataInputAssociation_0y7qwmd">
-        <di:waypoint x="295" y="0" />
-        <di:waypoint x="680" y="0" />
+        <di:waypoint x="298" y="20" />
+        <di:waypoint x="680" y="20" />
         <di:waypoint x="680" y="130" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="DataInputAssociation_0o2vh8a_di" bpmnElement="DataInputAssociation_0o2vh8a">
@@ -316,8 +340,12 @@ istZuHoch: zuHoch}</bpmn:script>
         <di:waypoint x="680" y="130" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="DataOutputAssociation_0s6h1xf_di" bpmnElement="DataOutputAssociation_0s6h1xf">
-        <di:waypoint x="280" y="130" />
-        <di:waypoint x="280" y="25" />
+        <di:waypoint x="281" y="130" />
+        <di:waypoint x="283" y="45" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataOutputAssociation_01m4z54_di" bpmnElement="DataOutputAssociation_01m4z54">
+        <di:waypoint x="239" y="130" />
+        <di:waypoint x="223" y="5" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

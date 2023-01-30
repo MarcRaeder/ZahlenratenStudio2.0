@@ -16,7 +16,8 @@ public class GetRandomNumberHandler : IExternalTaskHandler<GetRandomNumberPayloa
     {
         Random rand = new Random();
         int randomNumber = rand.Next(1, 100);
-        var result = new GetRandomNumberResult(randomNumber);
+        var result = new GetRandomNumberResult(randomNumber, input.UserName);
+        Console.WriteLine("" + input.UserName);
 
         return Task.FromResult(result);
     }
