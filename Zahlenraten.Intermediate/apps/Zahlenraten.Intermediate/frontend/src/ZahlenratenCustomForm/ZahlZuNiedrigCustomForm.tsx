@@ -4,29 +4,26 @@ import { CustomFormProps } from '../DialogRenderer';
 
 import './ZahlenratenCustomForm.css';
 
-export class ZahlenratenCustomForm extends React.Component<CustomFormProps> {
-
-  private userInput: React.RefObject<HTMLInputElement>;
+export class ZahlZuNiedrigCustomForm extends React.Component<CustomFormProps> {
 
   constructor(props: CustomFormProps) {
     super(props);
 
-    this.userInput = React.createRef();
   }
 
   public render(): JSX.Element {
     return (
         <div className='test-class'>
-          <label>Gib eine Zahl ein: </label>
-          <input type='number' ref={this.userInput} />
+          <label>Deine Zahl war zu Niedrig!  </label>
+          <br />
           <button onClick={this._handleFormSubmit.bind(this)}>
-            Confirm
+            OK
           </button>
         </div>
     );
   }
 
   private _handleFormSubmit(): void {
-    this.props.finishUserTask({ input: this.userInput.current?.value });
+    this.props.finishUserTask({ input: null });
   }
 }

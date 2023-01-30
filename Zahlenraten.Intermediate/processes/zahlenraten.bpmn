@@ -93,15 +93,18 @@
         <camunda:formData>
           <camunda:formField id="FormField_tDPm5Y2u" type="paragraph" defaultValue="Dein Versuch war leider zu hoch!" customForm="{&#34;confirmButtonText&#34;:&#34;Hoch&#34;}" />
         </camunda:formData>
+        <camunda:properties>
+          <camunda:property name="customForm" value="ZahlZuHochCustomForm" />
+        </camunda:properties>
       </bpmn:extensionElements>
       <bpmn:incoming>Ungleich</bpmn:incoming>
       <bpmn:outgoing>Flow_191fr2z</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:userTask id="Activity_00x3tf9" name="Sorry...">
       <bpmn:extensionElements>
-        <camunda:formData>
-          <camunda:formField id="FormField_tDPm5Y2u" type="paragraph" defaultValue="Dein Versuch war leider zu niedrig!" />
-        </camunda:formData>
+        <camunda:properties>
+          <camunda:property name="customForm" value="ZahlZuNiedrigCustomForm" />
+        </camunda:properties>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0s8noj0</bpmn:incoming>
       <bpmn:outgoing>Flow_0xqnkzq</bpmn:outgoing>
