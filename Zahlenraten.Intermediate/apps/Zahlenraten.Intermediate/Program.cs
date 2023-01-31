@@ -11,7 +11,7 @@ builder.Services.AddSpaYarp();
 builder.Host.UseExternalTaskWorkers();
 builder.Services.AddControllers();
 builder.Services.Configure<ApiClientSettings>(builder.Configuration.GetSection("AtlasEngine"));
-builder.Services.AddScoped<GetRandomNumberHandler>();
+builder.Services.AddScoped<ZahlenratenHandler>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

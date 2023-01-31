@@ -10,8 +10,9 @@ export class ZahlenratenCustomForm extends React.Component<CustomFormProps> {
 
   constructor(props: CustomFormProps) {
     super(props);
-
+    console.log(this.props.userTask.tokens[0].payload.tries)
     this.userInput = React.createRef();
+
   }
 
   public render(): JSX.Element {
@@ -27,6 +28,6 @@ export class ZahlenratenCustomForm extends React.Component<CustomFormProps> {
   }
 
   private _handleFormSubmit(): void {
-    this.props.finishUserTask({ input: this.userInput.current?.value });
+    this.props.finishUserTask({ input: this.userInput.current?.value, tries: this.props.userTask.tokens[0].payload.tries += 1});
   }
 }

@@ -7,17 +7,17 @@ using AtlasEngine;
 using AtlasEngine.ExternalTasks;
 
 #pragma warning disable CS0618
-[ExternalTaskHandler("GetRandomNumberETW")]
+[ExternalTaskHandler("ZahlenratenETW")]
 #pragma warning restore CS0618
-public class GetRandomNumberHandler : IExternalTaskHandler<GetRandomNumberPayload, GetRandomNumberResult>
+public class ZahlenratenHandler : IExternalTaskHandler<ZahlenratenPayload, ZahlenratenResult>
 {
-    public Task<GetRandomNumberResult> HandleAsync(GetRandomNumberPayload input, ExternalTask task,
+    public Task<ZahlenratenResult> HandleAsync(ZahlenratenPayload input, ExternalTask task,
         CancellationToken cancellationToken = new ())
     {
         Random rand = new Random();
         int randomNumber = rand.Next(1, 100);
-        var result = new GetRandomNumberResult(randomNumber, input.UserName);
-        Console.WriteLine("" + input.UserName);
+        var result = new ZahlenratenResult(randomNumber);
+        
 
         return Task.FromResult(result);
     }

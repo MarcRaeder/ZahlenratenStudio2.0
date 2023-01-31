@@ -25,6 +25,6 @@ export class ZahlenratenStartDialog extends React.Component<StartDialogProps> {
   }
 
   private _handleOnClick(): void {
-    this.props.startProcess("Zahlenraten", {userName: this.userName.current?.value});
+    this.props.startProcess("Zahlenraten", {userName: this.userName.current?.value });
   }
 }
