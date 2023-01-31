@@ -10,14 +10,14 @@ export class ZahlenratenCustomForm extends React.Component<CustomFormProps> {
 
   constructor(props: CustomFormProps) {
     super(props);
-    console.log(this.props.userTask.tokens[0].payload.tries)
     this.userInput = React.createRef();
-
-  }
+  }  
 
   public render(): JSX.Element {
     return (
         <div className='test-class'>
+          <h1>Du hast noch {this.props.userTask.tokens[0].payload.leftTries} Versuche</h1>
+          <br />
           <label>Gib eine Zahl ein: </label>
           <input type='number' ref={this.userInput} />
           <button onClick={this._handleFormSubmit.bind(this)}>
@@ -28,6 +28,7 @@ export class ZahlenratenCustomForm extends React.Component<CustomFormProps> {
   }
 
   private _handleFormSubmit(): void {
-    this.props.finishUserTask({ input: this.userInput.current?.value, tries: this.props.userTask.tokens[0].payload.tries += 1});
+    this.props.finishUserTask({ input: this.userInput.current?.value, tries: this.props.userTask.tokens[0].payload.tries += 1, leftTries: this.props.userTask.tokens[0].payload.leftTries -= 1});
+    
   }
 }

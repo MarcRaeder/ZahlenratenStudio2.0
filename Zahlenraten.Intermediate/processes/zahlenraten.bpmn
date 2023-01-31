@@ -7,17 +7,20 @@
     <bpmn:laneSet>
       <bpmn:lane id="Lane_1xzf0d3" name="Lane">
         <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0faoi1m</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_009yzld</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_0aqpgm1</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_0exjv9h</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_0n5jfsl</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Gateway_0h5nawz</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_01b4ahw</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_00x3tf9</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_02zrv06</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Event_1h04uck</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_17xe2r7</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Activity_0faoi1m</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Gateway_009yzld</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_0bbcdz0</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Element</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_0h5nawz</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_1h04uck</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_1n1gf8c</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:startEvent id="StartEvent_1" name="Start">
@@ -43,24 +46,67 @@
     <bpmn:sequenceFlow id="Flow_0s8noj0" sourceRef="Gateway_0n5jfsl" targetRef="Activity_00x3tf9">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">token.current.istGleich === false &amp;&amp; token.current.istZuHoch === false</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1v2mb61" sourceRef="Activity_02zrv06" targetRef="Gateway_0h5nawz" />
+    <bpmn:sequenceFlow id="Flow_1v2mb61" sourceRef="Activity_02zrv06" targetRef="Gateway_1n1gf8c" />
     <bpmn:sequenceFlow id="Flow_1tfps9l" sourceRef="Gateway_0h5nawz" targetRef="Event_1h04uck">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">token.current.Restart === false</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0z1trm1" sourceRef="Gateway_0h5nawz" targetRef="Gateway_009yzld">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">token.current.Restart === true</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_08vdmfa" sourceRef="Activity_0faoi1m" targetRef="Gateway_0aqpgm1" />
-    <bpmn:sequenceFlow id="Flow_0xqnkzq" sourceRef="Activity_00x3tf9" targetRef="Gateway_0aqpgm1" />
-    <bpmn:sequenceFlow id="Flow_191fr2z" sourceRef="Activity_01b4ahw" targetRef="Gateway_0aqpgm1" />
+    <bpmn:sequenceFlow id="Flow_08vdmfa" sourceRef="Activity_0faoi1m" targetRef="Gateway_0bbcdz0" />
+    <bpmn:sequenceFlow id="Flow_0xqnkzq" sourceRef="Activity_00x3tf9" targetRef="Gateway_0bbcdz0" />
+    <bpmn:sequenceFlow id="Flow_191fr2z" sourceRef="Activity_01b4ahw" targetRef="Gateway_0bbcdz0" />
     <bpmn:sequenceFlow id="Flow_1twxtii" sourceRef="Gateway_0aqpgm1" targetRef="Activity_0exjv9h">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">dataObjects.Tries.leftTries !== 0</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="Activity_0faoi1m" name="Get Random Number" camunda:type="external" camunda:topic="ZahlenratenETW">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property name="studio.paramUrl" value="http://www.randomnumberapi.com/api/v1.0/random?min=1&#38;max=20&#38;count=1" />
+          <camunda:property name="studio.paramBody" />
+          <camunda:property name="studio.paramContentType" value="text/html; charset=UTF-8" />
+          <camunda:property name="studio.paramAuthorization" />
+          <camunda:property name="engine.runPreScript" value="" />
+          <camunda:property name="engine.runPostScript" value="return {&#10;    ...token.current,&#10;    tries: 0,&#10;    leftTries: 5,&#10;}" />
+        </camunda:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1qeuwq6</bpmn:incoming>
+      <bpmn:outgoing>Flow_08vdmfa</bpmn:outgoing>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_0s6h1xf">
+        <bpmn:extensionElements>
+          <camunda:properties>
+            <camunda:property name="dataSource" value="return {&#10;    randomNumber: parseInt(token.current.randomNumber)&#10;}" />
+          </camunda:properties>
+        </bpmn:extensionElements>
+        <bpmn:targetRef>RandomNumber</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_0b87606">
+        <bpmn:extensionElements>
+          <camunda:properties>
+            <camunda:property name="dataSource" value="return {&#10;    tries: token.current.tries,&#10;    leftTries: token.current.leftTries&#10;    }" />
+          </camunda:properties>
+        </bpmn:extensionElements>
+        <bpmn:targetRef>Tries</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1qeuwq6" sourceRef="Gateway_009yzld" targetRef="Activity_0faoi1m">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" />
     </bpmn:sequenceFlow>
-    <bpmn:exclusiveGateway id="Gateway_0aqpgm1">
-      <bpmn:incoming>Flow_08vdmfa</bpmn:incoming>
-      <bpmn:incoming>Flow_0xqnkzq</bpmn:incoming>
-      <bpmn:incoming>Flow_191fr2z</bpmn:incoming>
+    <bpmn:exclusiveGateway id="Gateway_009yzld">
+      <bpmn:incoming>Flow_0p5rfjm</bpmn:incoming>
+      <bpmn:incoming>Flow_0z1trm1</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qeuwq6</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:dataObjectReference id="UserName" name="UserName" dataObjectRef="DataObject_126zdbv" />
+    <bpmn:dataObject id="DataObject_126zdbv" />
+    <bpmn:dataObjectReference id="RandomNumber" name="Random Number" dataObjectRef="DataObject_0ek5jwf" />
+    <bpmn:dataObject id="DataObject_0ek5jwf" />
+    <bpmn:dataObjectReference id="Tries" name="Tries" dataObjectRef="DataObject_1pdcgg3" />
+    <bpmn:dataObject id="DataObject_1pdcgg3" />
+    <bpmn:exclusiveGateway id="Gateway_0aqpgm1" name="">
+      <bpmn:incoming>Flow_1tus48x</bpmn:incoming>
       <bpmn:outgoing>Flow_1twxtii</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0zzjobd</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="Activity_0exjv9h" name="Rate die Zahl!">
       <bpmn:extensionElements>
@@ -68,8 +114,9 @@
           <camunda:formField id="guess" label="Versuch es!" type="long" customForm="{&#34;placeholder&#34;:&#34;Gib eine Zahl zwischen 1 - 20 ein!&#34;}" />
         </camunda:formData>
         <camunda:properties>
-          <camunda:property name="engine.runPreScript" value="return {&#10;    ...token.current, &#10;    tries: dataObjects.Tries.tries ?? 0&#10;}" />
+          <camunda:property name="engine.runPreScript" value="return {&#10;    ...token.current, &#10;    tries: dataObjects.Tries.tries ?? 0,&#10;    leftTries: dataObjects.Tries.leftTries ?? 5&#10;}" />
           <camunda:property name="customForm" value="ZahlenratenCustomForm" />
+          <camunda:property name="engine.runPostScript" value="" />
         </camunda:properties>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1twxtii</bpmn:incoming>
@@ -85,7 +132,7 @@
       <bpmn:dataOutputAssociation id="DataOutputAssociation_1m70umh">
         <bpmn:extensionElements>
           <camunda:properties>
-            <camunda:property name="dataSource" value="return token.current.tries&#10;" />
+            <camunda:property name="dataSource" value="return {&#10;    tries: token.current.tries,&#10;    leftTries: token.current.leftTries&#10;    }&#10;" />
           </camunda:properties>
         </bpmn:extensionElements>
         <bpmn:targetRef>Tries</bpmn:targetRef>
@@ -97,13 +144,6 @@
       <bpmn:outgoing>Ungleich</bpmn:outgoing>
       <bpmn:outgoing>Flow_0s8noj0</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:exclusiveGateway id="Gateway_0h5nawz">
-      <bpmn:incoming>Flow_1v2mb61</bpmn:incoming>
-      <bpmn:outgoing>Flow_1tfps9l</bpmn:outgoing>
-      <bpmn:outgoing>Flow_0z1trm1</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:dataObjectReference id="Guess" dataObjectRef="DataObject_04x3ko3" />
-    <bpmn:dataObject id="DataObject_04x3ko3" />
     <bpmn:userTask id="Activity_01b4ahw" name="Sorry...">
       <bpmn:extensionElements>
         <camunda:formData>
@@ -128,7 +168,7 @@
     <bpmn:userTask id="Activity_02zrv06" name="Gewonnen">
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="Restart" label="Glückwunsch ${dataObjects.UserName.userName}. Du hast ${dataObjects.Tries} Versuche gebraucht. Möchtest du nochmal spielen?" type="confirm" defaultValue="Du hast die richtige Zahl erraten!!!" customForm="{&#34;confirmButtonText&#34;:&#34;Ja&#34;,&#34;declineButtonText&#34;:&#34;Nein&#34;}" />
+          <camunda:formField id="Restart" label="Glückwunsch ${dataObjects.UserName.userName}. Du hast ${dataObjects.Tries.tries} Versuche gebraucht. Möchtest du nochmal spielen?" type="confirm" defaultValue="Du hast die richtige Zahl erraten!!!" customForm="{&#34;confirmButtonText&#34;:&#34;Ja&#34;,&#34;declineButtonText&#34;:&#34;Nein&#34;}" />
         </camunda:formData>
         <camunda:properties>
           <camunda:property name="engine.runPreScript" value="" />
@@ -136,19 +176,7 @@
       </bpmn:extensionElements>
       <bpmn:incoming>Gleich</bpmn:incoming>
       <bpmn:outgoing>Flow_1v2mb61</bpmn:outgoing>
-      <bpmn:property id="Property_1tfamia" name="__targetRef_placeholder" />
-      <bpmn:dataInputAssociation id="DataInputAssociation_1443sdu">
-        <bpmn:sourceRef>UserName</bpmn:sourceRef>
-        <bpmn:targetRef>Property_1tfamia</bpmn:targetRef>
-      </bpmn:dataInputAssociation>
-      <bpmn:dataInputAssociation id="DataInputAssociation_1nqtftx">
-        <bpmn:sourceRef>Tries</bpmn:sourceRef>
-        <bpmn:targetRef>Property_1tfamia</bpmn:targetRef>
-      </bpmn:dataInputAssociation>
     </bpmn:userTask>
-    <bpmn:endEvent id="Event_1h04uck">
-      <bpmn:incoming>Flow_1tfps9l</bpmn:incoming>
-    </bpmn:endEvent>
     <bpmn:scriptTask id="Activity_17xe2r7" name="Vergleich erstellen">
       <bpmn:extensionElements>
         <camunda:properties>
@@ -157,15 +185,6 @@
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0sdtkqt</bpmn:incoming>
       <bpmn:outgoing>Flow_1h3le1l</bpmn:outgoing>
-      <bpmn:property id="Property_1a3i5ym" name="__targetRef_placeholder" />
-      <bpmn:dataInputAssociation id="DataInputAssociation_0y7qwmd">
-        <bpmn:sourceRef>RandomNumber</bpmn:sourceRef>
-        <bpmn:targetRef>Property_1a3i5ym</bpmn:targetRef>
-      </bpmn:dataInputAssociation>
-      <bpmn:dataInputAssociation id="DataInputAssociation_0o2vh8a">
-        <bpmn:sourceRef>Guess</bpmn:sourceRef>
-        <bpmn:targetRef>Property_1a3i5ym</bpmn:targetRef>
-      </bpmn:dataInputAssociation>
       <bpmn:script>let vergleich = dataObjects.RandomNumber.randomNumber === dataObjects.Guess.guess
 
 let zuHoch = dataObjects.Guess.guess &gt; dataObjects.RandomNumber.randomNumber
@@ -173,100 +192,57 @@ let zuHoch = dataObjects.Guess.guess &gt; dataObjects.RandomNumber.randomNumber
 return {istGleich: vergleich,
 istZuHoch: zuHoch}</bpmn:script>
     </bpmn:scriptTask>
-    <bpmn:serviceTask id="Activity_0faoi1m" name="Get Random Number" camunda:type="external" camunda:topic="ZahlenratenETW">
-      <bpmn:extensionElements>
-        <camunda:properties>
-          <camunda:property name="studio.paramUrl" value="http://www.randomnumberapi.com/api/v1.0/random?min=1&#38;max=20&#38;count=1" />
-          <camunda:property name="studio.paramBody" />
-          <camunda:property name="studio.paramContentType" value="text/html; charset=UTF-8" />
-          <camunda:property name="studio.paramAuthorization" />
-          <camunda:property name="engine.runPreScript" value="" />
-          <camunda:property name="engine.runPostScript" value="return {&#10;    ...token.current,&#10;    tries: 0&#10;}" />
-        </camunda:properties>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1qeuwq6</bpmn:incoming>
-      <bpmn:outgoing>Flow_08vdmfa</bpmn:outgoing>
-      <bpmn:dataOutputAssociation id="DataOutputAssociation_0s6h1xf">
-        <bpmn:extensionElements>
-          <camunda:properties>
-            <camunda:property name="dataSource" value="return {&#10;    randomNumber: parseInt(token.current.randomNumber)&#10;}" />
-          </camunda:properties>
-        </bpmn:extensionElements>
-        <bpmn:targetRef>RandomNumber</bpmn:targetRef>
-      </bpmn:dataOutputAssociation>
-      <bpmn:dataOutputAssociation id="DataOutputAssociation_0b87606">
-        <bpmn:extensionElements>
-          <camunda:properties>
-            <camunda:property name="dataSource" value="return {tries: token.current.tries}" />
-          </camunda:properties>
-        </bpmn:extensionElements>
-        <bpmn:targetRef>Tries</bpmn:targetRef>
-      </bpmn:dataOutputAssociation>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1qeuwq6" sourceRef="Gateway_009yzld" targetRef="Activity_0faoi1m">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" />
-    </bpmn:sequenceFlow>
-    <bpmn:exclusiveGateway id="Gateway_009yzld">
-      <bpmn:incoming>Flow_0p5rfjm</bpmn:incoming>
-      <bpmn:incoming>Flow_0z1trm1</bpmn:incoming>
-      <bpmn:outgoing>Flow_1qeuwq6</bpmn:outgoing>
+    <bpmn:exclusiveGateway id="Gateway_0bbcdz0">
+      <bpmn:incoming>Flow_08vdmfa</bpmn:incoming>
+      <bpmn:incoming>Flow_191fr2z</bpmn:incoming>
+      <bpmn:incoming>Flow_0xqnkzq</bpmn:incoming>
+      <bpmn:outgoing>Flow_1tus48x</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:dataObjectReference id="UserName" dataObjectRef="DataObject_126zdbv" />
-    <bpmn:dataObject id="DataObject_126zdbv" />
-    <bpmn:dataObjectReference id="RandomNumber" dataObjectRef="DataObject_0ek5jwf" />
-    <bpmn:dataObject id="DataObject_0ek5jwf" />
-    <bpmn:dataObjectReference id="Tries" name="Tries" dataObjectRef="DataObject_1pdcgg3" />
-    <bpmn:dataObject id="DataObject_1pdcgg3" />
+    <bpmn:sequenceFlow id="Flow_1tus48x" sourceRef="Gateway_0bbcdz0" targetRef="Gateway_0aqpgm1" />
+    <bpmn:userTask id="Element" name="Verloren">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Restart" label="Du hast Verloren. Möchtest du nochmal spielen?" type="confirm" customForm="{&#34;confirmButtonText&#34;:&#34;Ja&#34;,&#34;declineButtonText&#34;:&#34;Nein&#34;}" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0zzjobd</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qb84y3</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0zzjobd" sourceRef="Gateway_0aqpgm1" targetRef="Element">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">dataObjects.Tries.leftTries === 0</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:dataObjectReference id="Guess" name="Guess" dataObjectRef="DataObject_04x3ko3" />
+    <bpmn:dataObject id="DataObject_04x3ko3" />
+    <bpmn:sequenceFlow id="Flow_1qb84y3" sourceRef="Element" targetRef="Gateway_1n1gf8c" />
+    <bpmn:exclusiveGateway id="Gateway_0h5nawz">
+      <bpmn:incoming>Flow_0fm97wx</bpmn:incoming>
+      <bpmn:outgoing>Flow_1tfps9l</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0z1trm1</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="Event_1h04uck">
+      <bpmn:incoming>Flow_1tfps9l</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:exclusiveGateway id="Gateway_1n1gf8c">
+      <bpmn:incoming>Flow_1v2mb61</bpmn:incoming>
+      <bpmn:incoming>Flow_1qb84y3</bpmn:incoming>
+      <bpmn:outgoing>Flow_0fm97wx</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0fm97wx" sourceRef="Gateway_1n1gf8c" targetRef="Gateway_0h5nawz" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1cidyxu">
       <bpmndi:BPMNShape id="Participant_0px403d_di" bpmnElement="Participant_0px403d" isHorizontal="true">
-        <dc:Bounds x="-90" y="-250" width="1740" height="860" />
+        <dc:Bounds x="-90" y="-380" width="1980" height="990" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_1xzf0d3_di" bpmnElement="Lane_1xzf0d3" isHorizontal="true">
-        <dc:Bounds x="-60" y="-250" width="1710" height="860" />
+        <dc:Bounds x="-60" y="-380" width="1950" height="990" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
         <dc:Bounds x="92" y="152" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="98" y="195" width="24" height="14" />
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0aqpgm1_di" bpmnElement="Gateway_0aqpgm1" isMarkerVisible="true">
-        <dc:Bounds x="355" y="145" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_04ioc4q_di" bpmnElement="Activity_0exjv9h">
-        <dc:Bounds x="460" y="130" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0n5jfsl_di" bpmnElement="Gateway_0n5jfsl" isMarkerVisible="true">
-        <dc:Bounds x="785" y="145" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0h5nawz_di" bpmnElement="Gateway_0h5nawz" isMarkerVisible="true">
-        <dc:Bounds x="1085" y="145" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="DataObjectReference_0pzk9bv_di" bpmnElement="Guess">
-        <dc:Bounds x="492" y="35" width="36" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0v5lak6_di" bpmnElement="Activity_01b4ahw">
-        <dc:Bounds x="630" y="260" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1vqjwiv" bpmnElement="Activity_00x3tf9">
-        <dc:Bounds x="630" y="380" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1wn95tw_di" bpmnElement="Activity_02zrv06">
-        <dc:Bounds x="910" y="130" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1h04uck_di" bpmnElement="Event_1h04uck">
-        <dc:Bounds x="1212" y="152" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1nhuv0t_di" bpmnElement="Activity_17xe2r7">
-        <dc:Bounds x="630" y="130" width="100" height="80" />
-        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0jmwuom_di" bpmnElement="Activity_0faoi1m">
         <dc:Bounds x="230" y="130" width="100" height="80" />
@@ -276,121 +252,176 @@ istZuHoch: zuHoch}</bpmn:script>
         <dc:Bounds x="155" y="145" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="DataObjectReference_0dvti8j_di" bpmnElement="UserName">
-        <dc:Bounds x="202" y="-45" width="36" height="50" />
+        <dc:Bounds x="92" y="-145" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="84" y="-175" width="53" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="DataObjectReference_1m96l39_di" bpmnElement="RandomNumber">
-        <dc:Bounds x="262" y="-5" width="36" height="50" />
+        <dc:Bounds x="262" y="-105" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="238" y="-135" width="84" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="DataObjectReference_017obwr_di" bpmnElement="Tries">
-        <dc:Bounds x="492" y="-125" width="36" height="50" />
+        <dc:Bounds x="312" y="-265" width="36" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="498" y="-155" width="25" height="14" />
+          <dc:Bounds x="318" y="-295" width="25" height="14" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0aqpgm1_di" bpmnElement="Gateway_0aqpgm1" isMarkerVisible="true">
+        <dc:Bounds x="495" y="145" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="475" y="202" width="90" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_04ioc4q_di" bpmnElement="Activity_0exjv9h">
+        <dc:Bounds x="600" y="130" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0n5jfsl_di" bpmnElement="Gateway_0n5jfsl" isMarkerVisible="true">
+        <dc:Bounds x="925" y="145" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0v5lak6_di" bpmnElement="Activity_01b4ahw">
+        <dc:Bounds x="770" y="260" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1vqjwiv" bpmnElement="Activity_00x3tf9">
+        <dc:Bounds x="770" y="380" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1wn95tw_di" bpmnElement="Activity_02zrv06">
+        <dc:Bounds x="1050" y="130" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1nhuv0t_di" bpmnElement="Activity_17xe2r7">
+        <dc:Bounds x="770" y="130" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0bbcdz0_di" bpmnElement="Gateway_0bbcdz0" isMarkerVisible="true">
+        <dc:Bounds x="385" y="145" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_02wdzwx_di" bpmnElement="Element">
+        <dc:Bounds x="1050" y="-40" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_0pzk9bv_di" bpmnElement="Guess">
+        <dc:Bounds x="632" y="-265" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="634" y="-295" width="32" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0h5nawz_di" bpmnElement="Gateway_0h5nawz" isMarkerVisible="true">
+        <dc:Bounds x="1325" y="145" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1h04uck_di" bpmnElement="Event_1h04uck">
+        <dc:Bounds x="1452" y="152" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1n1gf8c_di" bpmnElement="Gateway_1n1gf8c" isMarkerVisible="true">
+        <dc:Bounds x="1215" y="145" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0p5rfjm_di" bpmnElement="Flow_0p5rfjm">
         <di:waypoint x="128" y="170" />
         <di:waypoint x="155" y="170" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0sdtkqt_di" bpmnElement="Flow_0sdtkqt">
-        <di:waypoint x="560" y="170" />
-        <di:waypoint x="630" y="170" />
+        <di:waypoint x="700" y="170" />
+        <di:waypoint x="770" y="170" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1h3le1l_di" bpmnElement="Flow_1h3le1l">
-        <di:waypoint x="730" y="170" />
-        <di:waypoint x="785" y="170" />
+        <di:waypoint x="870" y="170" />
+        <di:waypoint x="925" y="170" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1j50373_di" bpmnElement="Gleich">
-        <di:waypoint x="835" y="170" />
-        <di:waypoint x="910" y="170" />
+        <di:waypoint x="975" y="170" />
+        <di:waypoint x="1050" y="170" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0brlsl6_di" bpmnElement="Ungleich">
-        <di:waypoint x="810" y="195" />
-        <di:waypoint x="810" y="300" />
-        <di:waypoint x="730" y="300" />
+        <di:waypoint x="950" y="195" />
+        <di:waypoint x="950" y="300" />
+        <di:waypoint x="870" y="300" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0s8noj0_di" bpmnElement="Flow_0s8noj0">
-        <di:waypoint x="810" y="195" />
-        <di:waypoint x="810" y="420" />
-        <di:waypoint x="730" y="420" />
+        <di:waypoint x="950" y="195" />
+        <di:waypoint x="950" y="420" />
+        <di:waypoint x="870" y="420" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1v2mb61_di" bpmnElement="Flow_1v2mb61">
-        <di:waypoint x="1010" y="170" />
-        <di:waypoint x="1085" y="170" />
+        <di:waypoint x="1150" y="170" />
+        <di:waypoint x="1215" y="170" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1tfps9l_di" bpmnElement="Flow_1tfps9l">
-        <di:waypoint x="1135" y="170" />
-        <di:waypoint x="1212" y="170" />
+        <di:waypoint x="1375" y="170" />
+        <di:waypoint x="1452" y="170" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0z1trm1_di" bpmnElement="Flow_0z1trm1">
-        <di:waypoint x="1110" y="195" />
-        <di:waypoint x="1110" y="520" />
+        <di:waypoint x="1350" y="195" />
+        <di:waypoint x="1350" y="520" />
         <di:waypoint x="180" y="520" />
-        <di:waypoint x="180" y="200" />
+        <di:waypoint x="180" y="195" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="550" y="666" width="81" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_08vdmfa_di" bpmnElement="Flow_08vdmfa">
         <di:waypoint x="330" y="170" />
-        <di:waypoint x="355" y="170" />
+        <di:waypoint x="385" y="170" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0xqnkzq_di" bpmnElement="Flow_0xqnkzq">
-        <di:waypoint x="630" y="420" />
-        <di:waypoint x="380" y="420" />
-        <di:waypoint x="380" y="195" />
+        <di:waypoint x="770" y="420" />
+        <di:waypoint x="410" y="420" />
+        <di:waypoint x="410" y="200" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_191fr2z_di" bpmnElement="Flow_191fr2z">
-        <di:waypoint x="630" y="300" />
-        <di:waypoint x="380" y="300" />
-        <di:waypoint x="380" y="195" />
+        <di:waypoint x="770" y="300" />
+        <di:waypoint x="410" y="300" />
+        <di:waypoint x="410" y="200" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1twxtii_di" bpmnElement="Flow_1twxtii">
-        <di:waypoint x="405" y="170" />
-        <di:waypoint x="460" y="170" />
+        <di:waypoint x="545" y="170" />
+        <di:waypoint x="600" y="170" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1qeuwq6_di" bpmnElement="Flow_1qeuwq6">
         <di:waypoint x="205" y="170" />
         <di:waypoint x="230" y="170" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1tus48x_di" bpmnElement="Flow_1tus48x">
+        <di:waypoint x="435" y="170" />
+        <di:waypoint x="495" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zzjobd_di" bpmnElement="Flow_0zzjobd">
+        <di:waypoint x="520" y="145" />
+        <di:waypoint x="520" y="0" />
+        <di:waypoint x="1050" y="0" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qb84y3_di" bpmnElement="Flow_1qb84y3">
+        <di:waypoint x="1150" y="0" />
+        <di:waypoint x="1240" y="0" />
+        <di:waypoint x="1240" y="145" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0fm97wx_di" bpmnElement="Flow_0fm97wx">
+        <di:waypoint x="1265" y="170" />
+        <di:waypoint x="1325" y="170" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="DataOutputAssociation_01m4z54_di" bpmnElement="DataOutputAssociation_01m4z54">
-        <di:waypoint x="120" y="150" />
-        <di:waypoint x="205" y="5" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="DataOutputAssociation_0sg8gxd_di" bpmnElement="DataOutputAssociation_0sg8gxd">
-        <di:waypoint x="509" y="130" />
-        <di:waypoint x="510" y="85" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="DataOutputAssociation_1m70umh_di" bpmnElement="DataOutputAssociation_1m70umh">
-        <di:waypoint x="510" y="130" />
-        <di:waypoint x="510" y="-75" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="DataInputAssociation_1443sdu_di" bpmnElement="DataInputAssociation_1443sdu">
-        <di:waypoint x="238" y="-20" />
-        <di:waypoint x="960" y="-20" />
-        <di:waypoint x="960" y="130" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="DataInputAssociation_1nqtftx_di" bpmnElement="DataInputAssociation_1nqtftx">
-        <di:waypoint x="528" y="-100" />
-        <di:waypoint x="960" y="-100" />
-        <di:waypoint x="960" y="130" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="DataInputAssociation_0y7qwmd_di" bpmnElement="DataInputAssociation_0y7qwmd">
-        <di:waypoint x="298" y="20" />
-        <di:waypoint x="680" y="20" />
-        <di:waypoint x="680" y="130" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="DataInputAssociation_0o2vh8a_di" bpmnElement="DataInputAssociation_0o2vh8a">
-        <di:waypoint x="528" y="60" />
-        <di:waypoint x="680" y="60" />
-        <di:waypoint x="680" y="130" />
+        <di:waypoint x="108" y="152" />
+        <di:waypoint x="110" y="-95" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="DataOutputAssociation_0s6h1xf_di" bpmnElement="DataOutputAssociation_0s6h1xf">
         <di:waypoint x="281" y="130" />
-        <di:waypoint x="283" y="45" />
+        <di:waypoint x="284" y="-55" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="DataOutputAssociation_0b87606_di" bpmnElement="DataOutputAssociation_0b87606">
-        <di:waypoint x="314" y="130" />
-        <di:waypoint x="492" y="-77" />
+        <di:waypoint x="330" y="130" />
+        <di:waypoint x="330" y="-215" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataOutputAssociation_0sg8gxd_di" bpmnElement="DataOutputAssociation_0sg8gxd">
+        <di:waypoint x="648" y="130" />
+        <di:waypoint x="651" y="-215" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataOutputAssociation_1m70umh_di" bpmnElement="DataOutputAssociation_1m70umh">
+        <di:waypoint x="610" y="130" />
+        <di:waypoint x="610" y="-240" />
+        <di:waypoint x="348" y="-240" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
