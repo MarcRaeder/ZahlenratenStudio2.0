@@ -2,6 +2,8 @@ namespace Zahlenraten.Intermediate.Worker.Example;
 
 using System.Threading;
 using System.Threading.Tasks;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 using AtlasEngine;
 using AtlasEngine.ExternalTasks;
@@ -12,12 +14,11 @@ using AtlasEngine.ExternalTasks;
 public class ZahlenratenHandler : IExternalTaskHandler<ZahlenratenPayload, ZahlenratenResult>
 {
     public Task<ZahlenratenResult> HandleAsync(ZahlenratenPayload input, ExternalTask task,
-        CancellationToken cancellationToken = new ())
+        CancellationToken cancellationToken = new())
     {
         Random rand = new Random();
-        int randomNumber = rand.Next(1, 100);
+        int randomNumber = rand.Next(input.LowestNumber, input.HighestNumber);
         var result = new ZahlenratenResult(randomNumber);
-        
 
         return Task.FromResult(result);
     }

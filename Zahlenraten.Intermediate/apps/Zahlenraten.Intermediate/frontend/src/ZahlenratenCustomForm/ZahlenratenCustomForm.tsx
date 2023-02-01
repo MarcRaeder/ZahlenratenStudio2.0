@@ -16,8 +16,10 @@ export class ZahlenratenCustomForm extends React.Component<CustomFormProps> {
   public render(): JSX.Element {
     return (
         <div className='test-class'>
+
           <h1>Du hast noch {this.props.userTask.tokens[0].payload.leftTries} Versuche</h1>
           <br />
+          <h2>Deine Zahl liegt zwischen {this.props.userTask.tokens[0].payload.lowestNumber} und {this.props.userTask.tokens[0].payload.highestNumber} </h2>
           <label>Gib eine Zahl ein: </label>
           <input type='number' ref={this.userInput} />
           <button onClick={this._handleFormSubmit.bind(this)}>

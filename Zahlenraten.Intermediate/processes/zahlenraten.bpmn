@@ -24,6 +24,11 @@
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:startEvent id="StartEvent_1" name="Start">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property name="engine.runPostScript" value="" />
+        </camunda:properties>
+      </bpmn:extensionElements>
       <bpmn:outgoing>Flow_0p5rfjm</bpmn:outgoing>
       <bpmn:dataOutputAssociation id="DataOutputAssociation_01m4z54">
         <bpmn:extensionElements>
@@ -32,6 +37,14 @@
           </camunda:properties>
         </bpmn:extensionElements>
         <bpmn:targetRef>UserName</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_1acz6hc">
+        <bpmn:extensionElements>
+          <camunda:properties>
+            <camunda:property name="dataSource" value="return {&#10;    lowestNumber: token.current.lowestNumber,&#10;    highestNumber: token.current.highestNumber&#10;}" />
+          </camunda:properties>
+        </bpmn:extensionElements>
+        <bpmn:targetRef>Range</bpmn:targetRef>
       </bpmn:dataOutputAssociation>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_0p5rfjm" sourceRef="StartEvent_1" targetRef="Gateway_009yzld" />
@@ -68,6 +81,7 @@
           <camunda:property name="studio.paramAuthorization" />
           <camunda:property name="engine.runPreScript" value="" />
           <camunda:property name="engine.runPostScript" value="return {&#10;    ...token.current,&#10;    tries: 0,&#10;    leftTries: 5,&#10;}" />
+          <camunda:property name="payload" value="return {&#10;    lowestNumber: parseInt(dataObjects.Range.lowestNumber),&#10;    highestNumber: parseInt(dataObjects.Range.highestNumber)&#10;}" />
         </camunda:properties>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1qeuwq6</bpmn:incoming>
@@ -97,8 +111,6 @@
       <bpmn:incoming>Flow_0z1trm1</bpmn:incoming>
       <bpmn:outgoing>Flow_1qeuwq6</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:dataObjectReference id="UserName" name="UserName" dataObjectRef="DataObject_126zdbv" />
-    <bpmn:dataObject id="DataObject_126zdbv" />
     <bpmn:dataObjectReference id="RandomNumber" name="Random Number" dataObjectRef="DataObject_0ek5jwf" />
     <bpmn:dataObject id="DataObject_0ek5jwf" />
     <bpmn:dataObjectReference id="Tries" name="Tries" dataObjectRef="DataObject_1pdcgg3" />
@@ -114,7 +126,7 @@
           <camunda:formField id="guess" label="Versuch es!" type="long" customForm="{&#34;placeholder&#34;:&#34;Gib eine Zahl zwischen 1 - 20 ein!&#34;}" />
         </camunda:formData>
         <camunda:properties>
-          <camunda:property name="engine.runPreScript" value="return {&#10;    ...token.current, &#10;    tries: dataObjects.Tries.tries ?? 0,&#10;    leftTries: dataObjects.Tries.leftTries ?? 5&#10;}" />
+          <camunda:property name="engine.runPreScript" value="return {&#10;    ...token.current, &#10;    tries: dataObjects.Tries.tries ?? 0,&#10;    leftTries: dataObjects.Tries.leftTries ?? 5,&#10;    lowestNumber: dataObjects.Range.lowestNumber,&#10;    highestNumber: dataObjects.Range.  highestNumber,&#10;    &#10;}" />
           <camunda:property name="customForm" value="ZahlenratenCustomForm" />
           <camunda:property name="engine.runPostScript" value="" />
         </camunda:properties>
@@ -124,7 +136,7 @@
       <bpmn:dataOutputAssociation id="DataOutputAssociation_0sg8gxd">
         <bpmn:extensionElements>
           <camunda:properties>
-            <camunda:property name="dataSource" value="return {&#10;    guess: parseInt(token.current.input)&#10;}" />
+            <camunda:property name="dataSource" value="return {&#10;    guess: parseInt(token.current.input),&#10;    guesses: [parseInt(token.current.input), ...dataObjects.Guess?.guesses ?? []]&#10;}" />
           </camunda:properties>
         </bpmn:extensionElements>
         <bpmn:targetRef>Guess</bpmn:targetRef>
@@ -151,6 +163,7 @@
         </camunda:formData>
         <camunda:properties>
           <camunda:property name="customForm" value="ZahlZuHochCustomForm" />
+          <camunda:property name="engine.runPreScript" value="return {&#10;    guess: dataObjects.Guess.guess,&#10;    lastGuess: dataObjects.Guess.guesses[1],&#10;    randomNumber: dataObjects.RandomNumber.randomNumber,&#10;    tries: dataObjects.Tries.tries&#10;}" />
         </camunda:properties>
       </bpmn:extensionElements>
       <bpmn:incoming>Ungleich</bpmn:incoming>
@@ -160,6 +173,7 @@
       <bpmn:extensionElements>
         <camunda:properties>
           <camunda:property name="customForm" value="ZahlZuNiedrigCustomForm" />
+          <camunda:property name="engine.runPreScript" value="return {&#10;    guess: dataObjects.Guess.guess,&#10;    lastGuess: dataObjects.Guess.guesses[1],&#10;    randomNumber: dataObjects.RandomNumber.randomNumber,&#10;    tries: dataObjects.Tries.tries&#10;}" />
         </camunda:properties>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0s8noj0</bpmn:incoming>
@@ -228,6 +242,10 @@ istZuHoch: zuHoch}</bpmn:script>
       <bpmn:outgoing>Flow_0fm97wx</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0fm97wx" sourceRef="Gateway_1n1gf8c" targetRef="Gateway_0h5nawz" />
+    <bpmn:dataObjectReference id="UserName" name="UserName" dataObjectRef="DataObject_126zdbv" />
+    <bpmn:dataObject id="DataObject_126zdbv" />
+    <bpmn:dataObjectReference id="Range" name="Range" dataObjectRef="DataObject_01efx9f" />
+    <bpmn:dataObject id="DataObject_01efx9f" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1cidyxu">
@@ -250,12 +268,6 @@ istZuHoch: zuHoch}</bpmn:script>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_009yzld_di" bpmnElement="Gateway_009yzld" isMarkerVisible="true">
         <dc:Bounds x="155" y="145" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="DataObjectReference_0dvti8j_di" bpmnElement="UserName">
-        <dc:Bounds x="92" y="-145" width="36" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="84" y="-175" width="53" height="14" />
-        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="DataObjectReference_1m96l39_di" bpmnElement="RandomNumber">
         <dc:Bounds x="262" y="-105" width="36" height="50" />
@@ -318,6 +330,18 @@ istZuHoch: zuHoch}</bpmn:script>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1n1gf8c_di" bpmnElement="Gateway_1n1gf8c" isMarkerVisible="true">
         <dc:Bounds x="1215" y="145" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_0dvti8j_di" bpmnElement="UserName">
+        <dc:Bounds x="12" y="-255" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="4" y="-285" width="53" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_1hhattl_di" bpmnElement="Range">
+        <dc:Bounds x="132" y="-255" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="134" y="-198" width="33" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0p5rfjm_di" bpmnElement="Flow_0p5rfjm">
         <di:waypoint x="128" y="170" />
@@ -403,8 +427,12 @@ istZuHoch: zuHoch}</bpmn:script>
         <di:waypoint x="1325" y="170" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="DataOutputAssociation_01m4z54_di" bpmnElement="DataOutputAssociation_01m4z54">
-        <di:waypoint x="108" y="152" />
-        <di:waypoint x="110" y="-95" />
+        <di:waypoint x="105" y="153" />
+        <di:waypoint x="35" y="-205" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataOutputAssociation_1acz6hc_di" bpmnElement="DataOutputAssociation_1acz6hc">
+        <di:waypoint x="112" y="152" />
+        <di:waypoint x="146" y="-205" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="DataOutputAssociation_0s6h1xf_di" bpmnElement="DataOutputAssociation_0s6h1xf">
         <di:waypoint x="281" y="130" />
