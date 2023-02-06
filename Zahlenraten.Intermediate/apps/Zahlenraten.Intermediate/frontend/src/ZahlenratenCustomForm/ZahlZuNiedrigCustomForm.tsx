@@ -5,30 +5,32 @@ import { CustomFormProps } from '../DialogRenderer';
 import './ZahlenratenCustomForm.css';
 
 export class ZahlZuNiedrigCustomForm extends React.Component<CustomFormProps> {
-
   private guess;
   private randomNumber;
   private text;
   private range;
   private tries;
   private distance;
+  private payload;
   
 
   constructor(props: CustomFormProps) {
     super(props);
     this.range = 10;
-    this.guess = this.props.userTask.tokens[0].payload.guess;
-    this.randomNumber = this.props.userTask.tokens[0].payload.randomNumber;
+    this.payload = this.props.userTask.tokens[0].payload;
+    this.guess = this.payload.guess;
+    this.randomNumber = this.payload.randomNumber;
     this.distance = Math.abs(this.randomNumber - this.guess);
-    this.tries = this.props.userTask.tokens[0].payload.tries;
+    this.tries = this.payload.tries;
     this.text = this.showText();
+    
   }
 
   showText(): string {
     if (this.tries === 1) {
       return this.distance < this.range ? 'Warm!' : 'Kalt!';
     } else {
-      const oldDistance = Math.abs(this.randomNumber - this.props.userTask.tokens[0].payload.lastGuess);
+      const oldDistance = Math.abs(this.randomNumber - this.payload.lastGuess);
       return this.distance < oldDistance ? 'Wärmer' : 'Kälter';
     }
   }

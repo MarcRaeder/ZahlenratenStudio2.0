@@ -3,7 +3,6 @@ import React from 'react';
 import { StartDialogProps } from '../DialogRenderer';
 
 export class ZahlenratenStartDialog extends React.Component<StartDialogProps> {
-
   private userName: React.RefObject<HTMLInputElement>;
   private lowestNumber: React.RefObject<HTMLInputElement>;
   private highestNumber: React.RefObject<HTMLInputElement>;
