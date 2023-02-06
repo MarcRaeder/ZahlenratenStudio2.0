@@ -16,7 +16,7 @@ export class ZahlZuHochCustomForm extends React.Component<CustomFormProps> {
 
   constructor(props: CustomFormProps) {
     super(props);
-    this.range = 10
+    this.range = 10;
     this.guess = this.props.userTask.tokens[0].payload.guess;
     this.randomNumber = this.props.userTask.tokens[0].payload.randomNumber;
     this.distance = Math.abs(this.randomNumber - this.guess);
@@ -24,27 +24,26 @@ export class ZahlZuHochCustomForm extends React.Component<CustomFormProps> {
     this.text = this.showText();
   }
 
-  showText() {
+  showText(): string {
     if (this.tries === 1) {
-      return this.distance <  this.range ? "Warm!" : "Kalt!";
-    }
-    else {
-      const oldDistance = Math.abs(this.randomNumber -  this.props.userTask.tokens[0].payload.lastGuess);
-      return this.distance < oldDistance ? "Wärmer" : "Kälter";
+      return this.distance < this.range ? 'Warm!' : 'Kalt!';
+    } else {
+      const oldDistance = Math.abs(this.randomNumber - this.props.userTask.tokens[0].payload.lastGuess);
+      return this.distance < oldDistance ? 'Wärmer' : 'Kälter';
     }
   }
 
   public render(): JSX.Element {
     return (
-        <div className='test-class'>
-          <h1>{this.text}</h1>
-          <br />
-          <h2>Deine Zahl war zu Hoch!  </h2>
-          <br />
-          <button onClick={this._handleFormSubmit.bind(this)}>
-            OK
-          </button>
-        </div>
+      <div className='test-class'>
+        <h1>{this.text}</h1>
+        <br />
+        <h2>Deine Zahl war zu Hoch!  </h2>
+        <br />
+        <button onClick={this._handleFormSubmit.bind(this)}>
+          OK
+        </button>
+      </div>
     );
   }
 

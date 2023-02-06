@@ -5,7 +5,7 @@ import { IIdentity } from '@atlas-engine/atlas_engine_client';
 import { StartDialogDisplayedCallback, StartDialogService } from '@atlas-engine-contrib/atlas-ui_sdk';
 
 import { Config } from '../config';
-import {ZahlenratenStartDialog} from "../ZahlenratenStartDialog/ZahlenratenStartdialog";
+import { ZahlenratenStartDialog } from '../ZahlenratenStartDialog/ZahlenratenStartdialog';
 
 
 export type DialogComponentDict = {
